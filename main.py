@@ -34,7 +34,7 @@ def specificity_score(y_true, y_pred):
 def main():
 
     # Cargar el dataset
-    data = pd.read_csv('zoo3.csv')
+    data = pd.read_csv('zoo2.csv')
 
     # One-hot encode the 'animal_name' column
     data = pd.get_dummies(data, columns=['animal_name'])
