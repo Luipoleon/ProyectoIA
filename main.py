@@ -7,6 +7,7 @@ from sklearn.svm import SVC
 from sklearn.naive_bayes import GaussianNB
 from sklearn.neural_network import MLPClassifier
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
+import matplotlib.pyplot as plt
 
 # Función para calcular la especificidad para multiclase
 
@@ -29,12 +30,14 @@ def specificity_score(y_true, y_pred):
     for i in range(len(fp)):
         specificity.append(tn / (tn + fp[i]))
 
-    return specificity
+    # Return the average specificity
+
+    return np.mean(specificity)
 
 def main():
 
     # Cargar el dataset
-    data = pd.read_csv('zoo2.csv')
+    data = pd.read_csv('zoo.csv')
 
     # One-hot encode the 'animal_name' column
     data = pd.get_dummies(data, columns=['animal_name'])
@@ -146,6 +149,49 @@ def main():
     print("Puntuación F1:", neural_network_f1_score)
 
 
+    # Graficar los resultados
+
+    models = ['Regresión Logística', 'K-Vecinos Cercanos', 'Máquinas de Vector Soporte', 'Naive Bayes', 'Neural Network']
+
+    accuracy = [logistic_regression_accuracy, k_neighbors_accuracy, support_vector_machines_accuracy, naive_bayes_accuracy, neural_network_accuracy]
+    precision = [logistic_regression_precision, k_neighbors_precision, support_vector_machines_precision, naive_bayes_precision, neural_network_precision]
+    recall = [logistic_regression_recall, k_neighbors_recall, support_vector_machines_recall, naive_bayes_recall, neural_network_recall]
+    specificity = [logistic_regression_specificity, 
+                   k_neighbors_specificity, 
+                   support_vector_machines_specificity, 
+                   naive_bayes_specificity, 
+                   neural_network_specificity
+                   ]
+    
+
+    fig, ax = plt.subplots(figsize=(16, 6))
+  
+
+    f1_score_2 = [logistic_regression_f1_score, k_neighbors_f1_score, support_vector_machines_f1_score, naive_bayes_f1_score, neural_network_f1_score]
+
+    x = np.arange(len(models))
+    width = 0.1
+    
+  
+    ax.bar(x - 2 * width, accuracy, width, label='Precisión')
+    ax.bar(x - width, precision, width, label='Precisión')
+    ax.bar(x, recall, width, label='Sensibilidad')
+    ax.bar(x + width, specificity, width, label='Especificidad')
+    ax.bar(x + 2 * width, f1_score_2, width, label='Puntuación F1')
+    plt.subplots_adjust(top=0.9, right=0.9)
+
+    ax.set_ylabel('Scores')
+    ax.set_title('Scores by model')
+    ax.set_xticks(x)
+    ax.set_xticklabels(models)
+    ax.legend()
+
+    #Move the box with the labels to the right bottom corner
+
+    plt.show()
+
+  
+    
    
 if __name__ == '__main__':
     main()
